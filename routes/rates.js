@@ -7,7 +7,7 @@ app.use(cors());
 
 let corsOptions = {
     origin: '*',
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    optionsSuccessStatus: 200 
 }
 
 const router = express.Router();
@@ -26,52 +26,42 @@ router.get('/', cors(corsOptions), (req, res) => {
                     let response = await fetch(`https://api.exchangeratesapi.io/latest/?base=${base}&symbols=${curr}`);
                     let result = await response.json();
                     let myResult = { 
-                        "results": {
-                            "base": result.base,
-                            "date": result.date,
-                            "rates": result.rates
+                        results: {
+                            base: result.base,
+                            date: result.date,
+                            rates: result.rates
                         }
                     }
                     if(lastChar === ',') {
-                        res.send({
-                            "results": {
-                                "error": "Please remove the trailing comma at the end of the last currency"
-                            }
+                        res.json({
+                            error: "Please remove the trailing comma at the end of the last currency"
                         })
                     }
                     else if(myResult.results.base === undefined) {
-                        res.send({
-                            "results": {
-                                "error": "Please note that the currency query parameter only accepts comma separated currencies and also check the currency if the initials are correct and exactly three(3) characters long"
-                            }
+                        res.json({
+                            error: "Please note that the currency query parameter only accepts comma separated currencies and also check the currency if the initials are correct and exactly three(3) characters long"
                         })
                     } else {
-                        res.send(myResult);
+                        res.json(myResult);
                     }
                 }
             
                 if(base !== '' && currency !== '') {
                     getExchangeRate(base.toUpperCase(), currency.toUpperCase().replace(/\s*,\s*/g, ","));
                 } else if(currency === '') {
-                    res.send({
-                        "results": {
-                            "no_currency_err": "The currency parameter string is empty please fill it and try making the get request again"
-                        }
+                    res.json({
+                        error: "The currency parameter string is empty please fill it and try making the get request again"
                     })
                 }
             }
         } else {
-            res.send({
-                "results": {
-                    "error": "The base currency initials you entered is incorrect. Please check it and try again. Note: it's usually three(3) characters long"
-                }
+            res.json({
+                error: "The base currency initials you entered is incorrect. Please check it and try again. Note: it's usually three(3) characters long"
             })
         }
     } else {
-        res.send({
-            "results": {
-                "error": "The 'base' query parameter string and or the 'currency' query parameter is missing. Please check it again"
-            }
+        res.json({
+            error: "The 'base' query parameter string and or the 'currency' query parameter is missing. Please check it again"
         })
     }   
 });
