@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
 
 import ratesRouter from './routes/rates.js';
 
@@ -11,7 +10,6 @@ app.use(bodyParser.json());
 app.listen(PORT, () => console.log(`Server Is Running At Port: ${PORT}`));
 
 app.use('/api/rates', ratesRouter);
-app.use(cors());
 
 app.use(function (req, res, next) {
     res.status(404).send({

@@ -1,8 +1,18 @@
 import express from 'express';
 import fetch from 'node-fetch';
+import cors from 'cors';
+
+const app = express();
+app.use(cors());
+
+let corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', cors(corsOptions), (req, res) => {
     req.query.base === '';
     req.query.currency === '';
     // Make sure the base and currency parameter strings are present
